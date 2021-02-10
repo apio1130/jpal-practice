@@ -39,11 +39,32 @@ public class JpaMain {
             // inner join Query로 조회함(명시적 조인). jpql이 join을 사용한다고 직관적으로 알 수 있음.
 
             // 3) 임베디드 타입 프로젝션
-            em.createQuery("select o.address from Order o", Address.class).getResultList();
+            // em.createQuery("select o.address from Order o", Address.class).getResultList();
             // 임베디드 타입을 조회하기 위해서는 소속된 Entity에서 조회를 시작해줘야한다.
             // from Address로 실행 불가능
 
             // 4) 스칼라 타입 프로젝션
+            // 4-1) Query 타입 조회
+            // List resultList = em.createQuery("select m.username, m.age from Member m").getResultList();
+            // Object o = resultList.get(0);
+            // Object[] result = (Object[])o;
+            // System.out.println("username = " + result[0]);
+            // System.out.println("age = " + result[1]);
+
+            // 4-2) Object[] 타입으로 조회
+            // List<Object[]> resultList = em.createQuery("select m.username, m.age from Member m").getResultList();
+            // Object[] result = resultList.get(0);
+            // System.out.println("username = " + result[0]);
+            // System.out.println("age = " + result[1]);
+
+            // 4-3) new 명령어로 조회
+            List<MemberDTO> resultList = em.createQuery("select new jpql.MemberDTO(m.username, m.age) from Member m", MemberDTO.class).getResultList();
+            MemberDTO memberDTO = resultList.get(0);
+            System.out.println("memberDTO = " + memberDTO.getUsername());
+            System.out.println("memberDTO = " + memberDTO.getAge());
+            // 단순 값을 조회하기에는 new DTO 명령어로 조회하는 방법을 추천.
+            // 패키지 명을 포함한 전체 클래스명을 입력
+            // 순서와 타입이 일치하는 생성자 필요
 
             tx.commit();
         } catch (Exception e) {
