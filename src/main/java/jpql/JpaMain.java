@@ -23,26 +23,18 @@ public class JpaMain {
             member.setAge(10);
             em.persist(member);
 
-            // TypeQuery: 반환 타입 명확할 때 사용
-            TypedQuery<Member> quert1 = em.createQuery("select m from Member m", Member.class);
-            // TypedQuery<String> quert2 = em.createQuery("select m.username from Member m", String.class);
-            List<Member> resultList = quert1.getResultList();
+            em.flush();
+            em.clear();
 
-            // Query: 반환 타입이 명확하지 않을 때 사용
-            // Query query3 = em.createQuery("select m.username, m.age from Member m");
+            // 프로젝션
+            // 1) 엔티티 프로젝션
+            List<Member> result = em.createQuery("select m from Member m", Member.class).getResultList();
+            Member findMember = result.get(0);
+            findMember.setAge(20);  // 20으로 변경되어 저장됨. 조회 결과가 영속성 컨텐스트에 전부 관리됨.
 
-            // 파라미터 바인딩
-            // 1) 이름 기준
-            Member result1 = em.createQuery("select m from Member m where m.username = :username", Member.class)
-                .setParameter("username", "member1")
-                .getSingleResult();
-            System.out.println("result =  " + result1.getUsername());
-            System.out.println("=====================================");
-            // 2) 위치 기준(사용 잘 안함: 쿼리 변경 시 순서에 대해서도 전부 변경해줘야 할 가능성이 있음)
-            Member result2 = em.createQuery("select m from Member m where m.username = ?1", Member.class)
-                .setParameter(1, "member1")
-                .getSingleResult();
-            System.out.println("result =  " + result2.getUsername());
+            // 2) 인티티 프로젝션
+            // 3) 임베디드 타입 프로젝션
+            // 4) 스칼라 타입 프로젝션
 
             tx.commit();
         } catch (Exception e) {
