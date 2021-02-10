@@ -35,10 +35,14 @@ public class JpaMain {
             // 2) 인티티 프로젝션
             // List<Team> result = em.createQuery("select m.team from Member m", Team.class).getResultList();
             //  -> inner join Query로 조회함(묵시적 조인). 조인의 사용은 성능에 영향을 많이 받기에 아래와 같이 명시적 조인으로 작성
-            List<Team> result = em.createQuery("select t from Member m join m.team t", Team.class).getResultList();
+            // List<Team> result = em.createQuery("select t from Member m join m.team t", Team.class).getResultList();
             // inner join Query로 조회함(명시적 조인). jpql이 join을 사용한다고 직관적으로 알 수 있음.
 
             // 3) 임베디드 타입 프로젝션
+            em.createQuery("select o.address from Order o", Address.class).getResultList();
+            // 임베디드 타입을 조회하기 위해서는 소속된 Entity에서 조회를 시작해줘야한다.
+            // from Address로 실행 불가능
+
             // 4) 스칼라 타입 프로젝션
 
             tx.commit();
