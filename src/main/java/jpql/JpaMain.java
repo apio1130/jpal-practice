@@ -35,8 +35,9 @@ public class JpaMain {
 
             // 페이징
             List<Member> members = em.createQuery("select m from Member m order by m.age desc ", Member.class)
-                .setFirstResult(1)
-                .setMaxResults(10)
+                // .setFirstResult(0)
+                .setFirstResult(10) // offset 값
+                .setMaxResults(10) // limit 값
                 .getResultList();
 
             System.out.println("result.size = " + members.size());
